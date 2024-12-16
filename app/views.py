@@ -21,37 +21,50 @@ def register_routes(app):
         next_page = request.args.get('next', request.path)
         return render_template('home.html', items=items, form=login_form, register_form=register_form, next=next_page)
 
-    #registration route when form submitted via post
     @app.route('/register', methods=['POST'])
     def register():
         register_form = RegistrationForm()
-
         if register_form.validate_on_submit():
+            # check if email is already registered
             existing_user = User.query.filter_by(email=register_form.email.data).first()
             if existing_user:
-                flash('Email in use, use another email', 'danger')
+                flash('Email already registered. Please log in.', 'danger')
                 return redirect(url_for('index', login_failed=True))
-
             existing_username = User.query.filter_by(username=register_form.username.data).first()
             if existing_username:
-                flash('Username taken,sorry pal', 'danger')
+                flash('Username exists, pick another.', 'danger')
                 return redirect(url_for('index', login_failed=True))
-            
-            new_user = User(username=register_form.username.data,email=register_form.email.data)
-            new_user.set_password(register_form.password.data)
 
+            new_user = User(
+                username=register_form.username.data,
+                email=register_form.email.data
+            )
+            new_user.set_password(register_form.password.data)
             try:
                 db.session.add(new_user)
                 db.session.commit()
                 login_user(new_user)
+                # merge session cart into user cart
+                session_cart = session.get('cart', {})
+                for item_id, quantity in session_cart.items():
+                    cart_item = Cart.query.filter_by(user_id=new_user.id, item_id=item_id).first()
+                    if cart_item:
+                        cart_item.quantity += quantity
+                    else:
+                        new_cart_item = Cart(user_id=new_user.id, item_id=item_id, quantity=quantity)
+                        db.session.add(new_cart_item)
+                db.session.commit()
+                # Clear the session cart after merging
+                session.pop('cart', None)
+
+                flash('You are now logged in.', 'success')
                 return redirect(url_for('index'))
-            except Exception:
-                flash('An error occurred when making user', 'danger')
+            except Exception as e:
+                flash('An error occurred,Please try again.', 'danger')
                 return redirect(url_for('index', login_failed=True))
-        
-        flash('Registration failed, please use different credentials', 'danger')
+        # If validation fails
+        flash('Registration failed, use different credentials', 'danger')
         return redirect(url_for('index', login_failed=True))
-    
     #login route active when form submitted via post 
     @app.route('/login', methods=['POST'])
     def login():
@@ -64,6 +77,7 @@ def register_routes(app):
 
                 # making session cart into user cart
                 session_cart = session.get('cart', {})
+                print("Session cart at login:", session_cart) 
                 #incrementing cart item quantity
                 for item_id, quantity in session_cart.items():
                     cart_item = Cart.query.filter_by(user_id=user.id, item_id=item_id).first()
