@@ -1,4 +1,4 @@
-/* Ensure the body takes up the full height of the viewport */
+
 body {
     display: flex;
     flex-direction: column;
@@ -6,47 +6,44 @@ body {
     margin: 0;
 }
 
-/* Push the footer to the bottom */
 main {
-    flex-grow: 1; /* Allow the main content to take up the remaining space */
+    flex-grow: 1; 
 }
 
 
 /* Custom Styles for Modal */
 .modal-content {
-    border-radius: 25px; /* Rounded corners for modal */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Subtle shadow for depth */
-    overflow: hidden; /* Ensure content respects rounded corners */
+    border-radius: 25px; /* rounded corners*/
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    overflow: hidden; 
 }
 
-/* Style for Buttons */
+/* styling buttons to be slightly round */
 .modal-content .btn-primary {
-    border-radius: 12px; /* Slight rounding for buttons */
+    border-radius: 12px; 
     transition: background-color 0.3s ease;
 }
 
 .modal-content .btn-primary:hover {
-    background-color: #0056b3; /* Darker shade on hover */
+    background-color: #0056b3; 
 }
 
-/* Input fields */
 .modal-content .form-control {
-    border-radius: 12px; /* Rounded corners for input fields */
+    border-radius: 12px; 
 }
 
 /* Tabs styling */
 .modal-content .nav-tabs .nav-link {
-    border-radius: 12px 12px 0 0; /* Round the top corners of tabs */
+    border-radius: 12px 12px 0 0; 
 }
 
 .modal-content .nav-tabs .nav-link.active {
-    background-color: #0d6efd; /* Bootstrap primary color */
+    background-color: #0d6efd; 
     color: white;
 }
-
 /* Modal background */
 .modal-backdrop {
-    background-color: rgba(0, 0, 0, 0.5); /* Dimmed backdrop */
+    background-color: rgba(0, 0, 0, 0.5); 
 }
 :focus {
     outline: 3px solid #005fcc;

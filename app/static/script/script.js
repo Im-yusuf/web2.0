@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             row.querySelector('.item-quantity').textContent = data.new_quantity;
                             row.querySelector('.item-subtotal').textContent = '£' + data.item_subtotal.toFixed(2);
                         } else {
-                            // Remove the row if quantity is zero
+                            // Remove the row if quantity is not more than zero
                             row.remove();
                         }
                     }
